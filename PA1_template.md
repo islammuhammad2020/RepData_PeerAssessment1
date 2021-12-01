@@ -8,37 +8,82 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 suppressPackageStartupMessages(library(tidyverse))
-library(tidyverse)
-activity <- read_csv("activity.zip") 
+```
 
 ```
+## Warning: package 'tidyverse' was built under R version 4.0.5
+```
+
+```
+## Warning: package 'tibble' was built under R version 4.0.5
+```
+
+```
+## Warning: package 'tidyr' was built under R version 4.0.5
+```
+
+```
+## Warning: package 'dplyr' was built under R version 4.0.5
+```
+
+```r
+library(tidyverse)
+activity <- read_csv("activity.zip") 
+```
+
+```
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   steps = col_double(),
+##   date = col_date(format = ""),
+##   interval = col_double()
+## )
+```
 ## What is mean total number of steps taken per day?
-```{r, echo=TRUE}
+
+```r
 activity_total <- activity %>% filter(steps != "NA") %>% 
                group_by(date) %>% summarise(total_steps = sum(steps))
 ggplot(activity_total,aes(x=date,weight = total_steps)) + stat_count()
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 activity_mean <- activity %>% filter(steps != "NA") %>% 
                group_by(date) %>% summarise(total_mean = mean(steps), total_median = median(steps))
-
 ```
 
 ## What is the average daily activity pattern?
-```{r,echo=TRUE}
 
+```r
 activity_interval <- activity %>% filter(steps != "NA") %>% 
                group_by(interval) %>% summarise(interval_mean = mean(steps))
 ggplot(activity_interval, aes(x = interval, y = interval_mean)) + geom_line()
-slice_max(activity_interval,interval_mean, n=1)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+```r
+slice_max(activity_interval,interval_mean, n=1)
+```
+
+```
+## # A tibble: 1 x 2
+##   interval interval_mean
+##      <dbl>         <dbl>
+## 1      835          206.
 ```
 
 
 
 ## Imputing missing values
-```{r, echo=TRUE}
 
+```r
 sum_NA <- sum(is.na(activity$steps))
 activity_NA <- filter(activity, is.na(steps))
 for(i in activity_interval$interval) {
@@ -47,18 +92,30 @@ for(i in activity_interval$interval) {
 activity$steps[is.na(activity$steps)] <- activity_NA$steps
 activity_total_imputed <- activity %>% group_by(date) %>% summarise(total_steps = sum(steps))
 ggplot(activity_total_imputed,aes(x=date,weight = total_steps)) + stat_count()
-activity_mean_imputed <- activity %>% group_by(date) %>% summarise(total_mean = mean(steps), total_median = median(steps))
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
+activity_mean_imputed <- activity %>% group_by(date) %>% summarise(total_mean = mean(steps), total_median = median(steps))
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
 
+```r
 day_type <- as.factor(ifelse(weekdays(activity$date) %in% c("Saturday", "Sunday"),"weekend","weekday"))
 activity_day <- activity %>% mutate(day_type = as.factor(ifelse(weekdays(activity$date) %in% 
                     c("Saturday", "Sunday"),"weekend","weekday")))
 activity_total_day <- activity_day %>% group_by(day_type,interval) %>% 
                      summarise(mean_steps = mean(steps))
-ggplot(activity_total_day,aes(x=interval, y=mean_steps)) + geom_line() +facet_grid(day_type~.)
+```
 
 ```
+## `summarise()` has grouped output by 'day_type'. You can override using the `.groups` argument.
+```
+
+```r
+ggplot(activity_total_day,aes(x=interval, y=mean_steps)) + geom_line() +facet_grid(day_type~.)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
