@@ -11,32 +11,13 @@ output:
 
 ```r
 suppressPackageStartupMessages(library(tidyverse))
-```
-
-```
-## Warning: package 'tidyverse' was built under R version 4.0.5
-```
-
-```
-## Warning: package 'tibble' was built under R version 4.0.5
-```
-
-```
-## Warning: package 'tidyr' was built under R version 4.0.5
-```
-
-```
-## Warning: package 'dplyr' was built under R version 4.0.5
-```
-
-```r
 library(tidyverse)
 activity <- read_csv("activity.zip") 
 ```
 
 ```
 ## 
-## -- Column specification --------------------------------------------------------
+## -- Column specification ---------------------------------------------------------------------------------------------
 ## cols(
 ##   steps = col_double(),
 ##   date = col_date(format = ""),
@@ -51,7 +32,7 @@ activity_total <- activity %>% filter(steps != "NA") %>%
 ggplot(activity_total,aes(x=date,weight = total_steps)) + stat_count()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](PA1_template_files/figure-html/mean_total_day-1.png)<!-- -->
 
 ```r
 activity_mean <- activity %>% filter(steps != "NA") %>% 
@@ -66,7 +47,7 @@ activity_interval <- activity %>% filter(steps != "NA") %>%
 ggplot(activity_interval, aes(x = interval, y = interval_mean)) + geom_line()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](PA1_template_files/figure-html/average_daily_activity-1.png)<!-- -->
 
 ```r
 slice_max(activity_interval,interval_mean, n=1)
@@ -94,7 +75,7 @@ activity_total_imputed <- activity %>% group_by(date) %>% summarise(total_steps 
 ggplot(activity_total_imputed,aes(x=date,weight = total_steps)) + stat_count()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](PA1_template_files/figure-html/activity_total_imputed-1.png)<!-- -->
 
 ```r
 activity_mean_imputed <- activity %>% group_by(date) %>% summarise(total_mean = mean(steps), total_median = median(steps))
@@ -118,4 +99,4 @@ activity_total_day <- activity_day %>% group_by(day_type,interval) %>%
 ggplot(activity_total_day,aes(x=interval, y=mean_steps)) + geom_line() +facet_grid(day_type~.)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](PA1_template_files/figure-html/activity_pattern-1.png)<!-- -->
