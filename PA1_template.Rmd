@@ -15,7 +15,7 @@ activity <- read_csv("activity.zip")
 
 ```
 ## What is mean total number of steps taken per day?
-```{r, echo=TRUE}
+```{r mean_total_day, echo=TRUE}
 activity_total <- activity %>% filter(steps != "NA") %>% 
                group_by(date) %>% summarise(total_steps = sum(steps))
 ggplot(activity_total,aes(x=date,weight = total_steps)) + stat_count()
@@ -25,7 +25,7 @@ activity_mean <- activity %>% filter(steps != "NA") %>%
 ```
 
 ## What is the average daily activity pattern?
-```{r,echo=TRUE}
+```{r average_daily_activity,echo=TRUE}
 
 activity_interval <- activity %>% filter(steps != "NA") %>% 
                group_by(interval) %>% summarise(interval_mean = mean(steps))
@@ -37,7 +37,7 @@ slice_max(activity_interval,interval_mean, n=1)
 
 
 ## Imputing missing values
-```{r, echo=TRUE}
+```{r activity_total_imputed, echo=TRUE}
 
 sum_NA <- sum(is.na(activity$steps))
 activity_NA <- filter(activity, is.na(steps))
@@ -52,7 +52,7 @@ activity_mean_imputed <- activity %>% group_by(date) %>% summarise(total_mean = 
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+```{r activity_pattern}
 
 day_type <- as.factor(ifelse(weekdays(activity$date) %in% c("Saturday", "Sunday"),"weekend","weekday"))
 activity_day <- activity %>% mutate(day_type = as.factor(ifelse(weekdays(activity$date) %in% 
